@@ -4,6 +4,9 @@ from constants import *
 def main():
     run = True
     clock = pygame.time.Clock()
+    zoom = 10.0
+    min_zoom = 0.08
+    max_zoom = 20.0
 
     sun = Planet("Sun", 0, 0, 30, COLORS.get("YELLOW"), 1.98892 * 10**30)
     sun.isSun = True
@@ -41,10 +44,20 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4: # scroll up
+                    zoom = min(max_zoom, zoom + 0.1)
+                elif event.button == 5: # scroll down
+                    zoom = max(min_zoom, zoom - 0.1)
             
         for planet in planets:
             planet.update_position(planets)
-            planet.draw(WIN)
+
+        center_x, center_y = sun.x, sun.y
+        for planet in planets:
+            planet.draw(WIN, center_x, center_y, zoom)
         pygame.display.update()
     
 

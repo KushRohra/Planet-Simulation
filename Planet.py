@@ -5,7 +5,7 @@ class Planet:
     AU = 149.6e6 * 1000 # distance in meters
     G = 6.67428e-11
     SCALE = (min(WIDTH, HEIGHT) * 0.42) / (30.06 * AU)
-    TIMESTEP = 3600 * 24 * 7 # 7 days
+    TIMESTEP = 3600 * 24 * 1 # 7 days
     
     def __init__(self, name, x, y, radius, color, mass):
         self.x = x
@@ -23,20 +23,20 @@ class Planet:
         self.x_vel = 0
         self.y_vel = 0
 
-    def scaleDistance(self, dimension):
-        return dimension * self.SCALE
+    def scaleDistance(self, dimension, zoom):
+        return dimension * self.SCALE * zoom
 
-    def draw(self, win):
-        x = self.scaleDistance(self.x) + WIDTH / 2
-        y = self.scaleDistance(self.y) + HEIGHT / 2
+    def draw(self, win, center_x, center_y, zoom):
+        x = self.scaleDistance(self.x - center_x, zoom) + WIDTH / 2
+        y = self.scaleDistance(self.y - center_y, zoom) + HEIGHT / 2
 
         if len(self.orbit) > 2:
             updated_points = []
             for point in self.orbit:
-                x, y = point
-                x = x * self.SCALE + WIDTH / 2
-                y = y * self.SCALE + HEIGHT / 2
-                updated_points.append((x, y))
+                orbit_x, orbit_y = point
+                orbit_x = self.scaleDistance(orbit_x - center_x, zoom) + WIDTH / 2
+                orbit_y = self.scaleDistance(orbit_y - center_y, zoom) + HEIGHT / 2
+                updated_points.append((orbit_x, orbit_y))
 
             pygame.draw.lines(win, self.color, False, updated_points, 2)
 
