@@ -5,7 +5,7 @@ class Planet:
     AU = 149.6e6 * 1000 # distance in meters
     G = 6.67428e-11
     SCALE = (min(WIDTH, HEIGHT) * 0.42) / (30.06 * AU)
-    TIMESTEP = 3600 * 24 * 1 # 7 days
+    TIMESTEP = 3600 * 24 * 1 # 1 day
     
     def __init__(self, name, x, y, radius, color, mass):
         self.x = x
