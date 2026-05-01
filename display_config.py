@@ -8,6 +8,7 @@ WIDTH, HEIGHT = WIN.get_size()
 
 PLANET_RADIUS_SCALE = 0.6
 MIN_PLANET_RADIUS = 2
+MAX_PLANET_VISUAL_ZOOM = 2.0
 
 FONT = pygame.font.SysFont("comicsans", 16)
 

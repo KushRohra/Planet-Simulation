@@ -1,7 +1,7 @@
 import math
 import pygame
 
-from display_config import WIDTH, HEIGHT, PLANET_RADIUS_SCALE, MIN_PLANET_RADIUS, FONT, COLORS
+from display_config import WIDTH, HEIGHT, PLANET_RADIUS_SCALE, MIN_PLANET_RADIUS, MAX_PLANET_VISUAL_ZOOM, FONT, COLORS
 
 class Planet:
     AU = 149.6e6 * 1000 # distance in meters
@@ -18,12 +18,7 @@ class Planet:
         self.color = color
         self.mass = mass
         self.image = image
-        self.scaled_image = None
-
-        if self.image is not None:
-            image_size = max(2, self.radius * 2) * 2
-            self.scaled_image = pygame.transform.smoothscale(self.image, (image_size, image_size))
-            print(f"For planet name: {self.name}, original radius: {radius}, scaled radius: {self.radius}, image size: {image_size}")
+        self.scaled_images = {}
 
         self.orbit = []
         self.isSun = False
@@ -35,10 +30,26 @@ class Planet:
     def scaleDistance(self, dimension, zoom):
         return dimension * self.SCALE * zoom
 
+    def scaledRadius(self, zoom):
+        visual_zoom = zoom if zoom <= MAX_PLANET_VISUAL_ZOOM else MAX_PLANET_VISUAL_ZOOM
+        radius = int(self.radius * visual_zoom)
+        return radius if radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS
+
+    def getScaledImage(self, radius):
+        image_size = radius * 2
+        scaled_image = self.scaled_images.get(image_size)
+
+        if scaled_image is None:
+            scaled_image = pygame.transform.smoothscale(self.image, (image_size, image_size))
+            self.scaled_images[image_size] = scaled_image
+
+        return scaled_image
+
     def draw(self, win, center_x, center_y, zoom):
         x = self.scaleDistance(self.x - center_x, zoom) + WIDTH / 2
         y = self.scaleDistance(self.y - center_y, zoom) + HEIGHT / 2
         center_pos = (int(x), int(y))
+        display_radius = self.scaledRadius(zoom)
 
         if len(self.orbit) > 2:
             updated_points = []
@@ -56,11 +67,12 @@ class Planet:
             planet_name_text = FONT.render(self.name, 1, COLORS.get("WHITE"))
             win.blit(planet_name_text, (x - distance_text.get_width()/2, y - distance_text.get_height()))
 
-        if self.scaled_image is not None:
-            image_rect = self.scaled_image.get_rect(center=center_pos)
-            win.blit(self.scaled_image, image_rect)
+        if self.image is not None:
+            scaled_image = self.getScaledImage(display_radius)
+            image_rect = scaled_image.get_rect(center=center_pos)
+            win.blit(scaled_image, image_rect)
         else:
-            pygame.draw.circle(win, self.color, center_pos, self.radius)
+            pygame.draw.circle(win, self.color, center_pos, display_radius)
 
     def forceOfAttractionBetweenPlanets(self, other):
         otherX, otherY = other.x, other.y

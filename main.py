@@ -29,7 +29,10 @@ def main():
 
         center_x, center_y = sun.x, sun.y
         for planet in planets:
-            planet.draw(WIN, center_x, center_y, zoom)
+            if not planet.isSun:
+                planet.draw(WIN, center_x, center_y, zoom)
+
+        sun.draw(WIN, center_x, center_y, zoom)
         pygame.display.update()
     
 main()
