@@ -9,7 +9,7 @@ class Planet:
     SCALE = (min(WIDTH, HEIGHT) * 0.42) / (30.06 * AU)
     TIMESTEP = 3600 * 24 * 1 # 1 day
     
-    def __init__(self, name, x, y, radius, color, mass):
+    def __init__(self, name, x, y, radius, color, mass, image = None):
         self.x = x
         self.y = y
         self.name = name
@@ -17,6 +17,13 @@ class Planet:
         self.radius = scaled_radius if scaled_radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS
         self.color = color
         self.mass = mass
+        self.image = image
+        self.scaled_image = None
+
+        if self.image is not None:
+            image_size = max(2, self.radius * 2) * 2
+            self.scaled_image = pygame.transform.smoothscale(self.image, (image_size, image_size))
+            print(f"For planet name: {self.name}, original radius: {radius}, scaled radius: {self.radius}, image size: {image_size}")
 
         self.orbit = []
         self.isSun = False
@@ -31,6 +38,7 @@ class Planet:
     def draw(self, win, center_x, center_y, zoom):
         x = self.scaleDistance(self.x - center_x, zoom) + WIDTH / 2
         y = self.scaleDistance(self.y - center_y, zoom) + HEIGHT / 2
+        center_pos = (int(x), int(y))
 
         if len(self.orbit) > 2:
             updated_points = []
@@ -48,7 +56,11 @@ class Planet:
             planet_name_text = FONT.render(self.name, 1, COLORS.get("WHITE"))
             win.blit(planet_name_text, (x - distance_text.get_width()/2, y - distance_text.get_height()))
 
-        pygame.draw.circle(win, self.color, (x, y), self.radius)
+        if self.scaled_image is not None:
+            image_rect = self.scaled_image.get_rect(center=center_pos)
+            win.blit(self.scaled_image, image_rect)
+        else:
+            pygame.draw.circle(win, self.color, center_pos, self.radius)
 
     def forceOfAttractionBetweenPlanets(self, other):
         otherX, otherY = other.x, other.y

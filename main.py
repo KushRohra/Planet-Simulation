@@ -7,7 +7,7 @@ def main():
     min_zoom = 0.08
     max_zoom = 20.0
 
-    planets = [sun, mercury, venus, earth, mars, asteroid_belt, jupiter, saturn, neptune, uranus, pluto]
+    planets = [sun, mercury, venus, earth, mars, asteroid, jupiter, saturn, neptune, uranus, pluto]
 
     while run:
         clock.tick(60)
