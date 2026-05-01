@@ -14,7 +14,7 @@ class Planet:
         self.y = y
         self.name = name
         scaled_radius = int(radius * PLANET_RADIUS_SCALE)
-        self.radius = scaled_radius if scaled_radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS
+        self.radius = scaled_radius if scaled_radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS # To guarantee visibility of smaller planets
         self.color = color
         self.mass = mass
         self.image = image
@@ -31,12 +31,12 @@ class Planet:
         return dimension * self.SCALE * zoom
 
     def scaledRadius(self, zoom):
-        visual_zoom = zoom if zoom <= MAX_PLANET_VISUAL_ZOOM else MAX_PLANET_VISUAL_ZOOM
+        visual_zoom = zoom if zoom <= MAX_PLANET_VISUAL_ZOOM else MAX_PLANET_VISUAL_ZOOM # Limit the zoom level for planet size to prevent them from becoming too large
         radius = int(self.radius * visual_zoom)
-        return radius if radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS
+        return radius if radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS # To guarantee visibility of smaller planets when zoomed out
 
     def getScaledImage(self, radius):
-        image_size = radius * 2
+        image_size = radius 
         scaled_image = self.scaled_images.get(image_size)
 
         if scaled_image is None:
@@ -53,6 +53,7 @@ class Planet:
 
         if len(self.orbit) > 2:
             updated_points = []
+            # Scale and translate orbit points to fit the current view
             for point in self.orbit:
                 orbit_x, orbit_y = point
                 orbit_x = self.scaleDistance(orbit_x - center_x, zoom) + WIDTH / 2
@@ -67,6 +68,7 @@ class Planet:
             planet_name_text = FONT.render(self.name, 1, COLORS.get("WHITE"))
             win.blit(planet_name_text, (x - distance_text.get_width()/2, y - distance_text.get_height()))
 
+        # Draw the planet using its image if available, otherwise draw a circle
         if self.image is not None:
             scaled_image = self.getScaledImage(display_radius)
             image_rect = scaled_image.get_rect(center=center_pos)
@@ -96,13 +98,15 @@ class Planet:
         for planet in planets:
             if self == planet:
                 continue
-            fx, fy = self.forceOfAttractionBetweenPlanets(planet)
+            fx, fy = self.forceOfAttractionBetweenPlanets(planet) # Get total x and y component of force from all planets
             totalFx += fx
             totalFy += fy
         
-        self.x_vel += totalFx / self.mass * self.TIMESTEP
+        # F = ma => a = F/m => v = at
+        self.x_vel += totalFx / self.mass * self.TIMESTEP 
         self.y_vel += totalFy / self.mass * self.TIMESTEP
 
+        # v = d/t => d = vt
         self.x += self.x_vel * self.TIMESTEP
         self.y += self.y_vel * self.TIMESTEP
         self.orbit.append((self.x, self.y))

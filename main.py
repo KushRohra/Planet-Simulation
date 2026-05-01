@@ -32,6 +32,7 @@ def main():
             if not planet.isSun:
                 planet.draw(WIN, center_x, center_y, zoom)
 
+        # Draw the sun last to ensure it remains on top of other planets
         sun.draw(WIN, center_x, center_y, zoom)
         pygame.display.update()
     
