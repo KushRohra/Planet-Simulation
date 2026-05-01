@@ -1,5 +1,7 @@
-from constants import *
 import math
+import pygame
+
+from display_config import WIDTH, HEIGHT, PLANET_RADIUS_SCALE, MIN_PLANET_RADIUS, FONT, COLORS
 
 class Planet:
     AU = 149.6e6 * 1000 # distance in meters
