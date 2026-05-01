@@ -7,9 +7,10 @@ class Planet:
     SCALE = 250 / AU # 1 Au = 100 pixels
     TIMESTEP = 3600 * 24 # 1 day
     
-    def __init__(self, x, y, radius, color, mass):
+    def __init__(self, name, x, y, radius, color, mass):
         self.x = x
         self.y = y
+        self.name = name
         self.radius = radius
         self.color = color
         self.mass = mass
@@ -41,6 +42,8 @@ class Planet:
         if not self.isSun:
             distance_text = FONT.render(f"{round(self.distance_to_sun/1000, 1)}km", 1, WHITE)
             win.blit(distance_text, (x - distance_text.get_width()/2, y - distance_text.get_height()/2))
+            planet_name_text = FONT.render(self.name, 1, WHITE)
+            win.blit(planet_name_text, (x - distance_text.get_width()/2, y - distance_text.get_height()))
 
         pygame.draw.circle(win, self.color, (x, y), self.radius)
 
