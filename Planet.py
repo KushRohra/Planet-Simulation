@@ -4,14 +4,15 @@ import math
 class Planet:
     AU = 149.6e6 * 1000 # distance in meters
     G = 6.67428e-11
-    SCALE = 250 / AU # 1 Au = 100 pixels
-    TIMESTEP = 3600 * 24 # 1 day
+    SCALE = (min(WIDTH, HEIGHT) * 0.42) / (30.06 * AU)
+    TIMESTEP = 3600 * 24 * 7 # 7 days
     
     def __init__(self, name, x, y, radius, color, mass):
         self.x = x
         self.y = y
         self.name = name
-        self.radius = radius
+        scaled_radius = int(radius * PLANET_RADIUS_SCALE)
+        self.radius = scaled_radius if scaled_radius >= MIN_PLANET_RADIUS else MIN_PLANET_RADIUS
         self.color = color
         self.mass = mass
 
@@ -40,9 +41,9 @@ class Planet:
             pygame.draw.lines(win, self.color, False, updated_points, 2)
 
         if not self.isSun:
-            distance_text = FONT.render(f"{round(self.distance_to_sun/1000, 1)}km", 1, WHITE)
+            distance_text = FONT.render(f"{round(self.distance_to_sun/1000, 1)}km", 1, COLORS.get("WHITE"))
             win.blit(distance_text, (x - distance_text.get_width()/2, y - distance_text.get_height()/2))
-            planet_name_text = FONT.render(self.name, 1, WHITE)
+            planet_name_text = FONT.render(self.name, 1, COLORS.get("WHITE"))
             win.blit(planet_name_text, (x - distance_text.get_width()/2, y - distance_text.get_height()))
 
         pygame.draw.circle(win, self.color, (x, y), self.radius)
