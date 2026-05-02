@@ -5,9 +5,9 @@ def main():
     clock = pygame.time.Clock()
     zoom = 10.0
     min_zoom = 0.08
-    max_zoom = 20.0
+    max_zoom = 40.0
 
-    planets = [sun, mercury, venus, earth, mars, asteroid, jupiter, saturn, neptune, uranus, pluto]
+    planets = [sun, mercury, venus, earth, mars] + asteroid_belt + [jupiter, saturn, neptune, uranus, pluto]
 
     while run:
         clock.tick(60)

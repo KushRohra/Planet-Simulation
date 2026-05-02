@@ -1,3 +1,6 @@
+import math
+import random
+
 from display_config import *
 from Planet import Planet
 from utils import load_image_for_planet
@@ -57,16 +60,32 @@ mars = Planet(
     )
 mars.y_vel = 24.077 * 1000
 
-asteroid = Planet(
-        name="Asteroid", 
-        x=-2.8 * Planet.AU, 
-        y=0, 
-        radius=10, 
-        color=COLORS.get("LIGHT_GREY"), 
-        mass=0.0001 * 10**24,
-        image=load_image_for_planet("Asteroid", "./images/asteroid.jpeg")
+asteroid_belt = []
+for i in range(300):
+    orbital_radius = random.uniform(2.1, 3.5) * Planet.AU 
+    theta = random.uniform(0, 2 * math.pi)
+
+    asteroid_x = orbital_radius * math.cos(theta)
+    asteroid_y = orbital_radius * math.sin(theta)
+
+    # Initialize near-circular prograde orbit around the Sun.
+    circular_speed = math.sqrt(Planet.G * sun.mass / orbital_radius)
+    speed = circular_speed * random.uniform(0.995, 1.005)
+
+    new_asteroid = Planet(
+        name=f"Asteroid_{i}",
+        x=asteroid_x,
+        y=asteroid_y,
+        radius=random.randint(2, 4),
+        color=COLORS.get("LIGHT_GREY"),
+        mass=random.uniform(1.2, 1.4) * 10**12,
+        image=load_image_for_planet(f"Asteroid_{i}", "./images/asteroid.jpeg")
     )
-asteroid.y_vel = 17.88 * 1000
+    # Tangential prograde velocity derived from the same orbital angle.
+    new_asteroid.x_vel = -speed * math.sin(theta)
+    new_asteroid.y_vel = speed * math.cos(theta)
+    new_asteroid.is_asteroid = True
+    asteroid_belt.append(new_asteroid)
 
 jupiter = Planet(
         name="Jupiter", 
@@ -124,7 +143,7 @@ pluto = Planet(
 pluto.y_vel = 4.74 * 1000
 
 # Balance initial linear momentum so the Sun does not drift away from the system.
-orbiting_bodies = [mercury, venus, earth, mars, asteroid, jupiter, saturn, neptune, uranus, pluto]
+orbiting_bodies = [mercury, venus, earth, mars] + asteroid_belt + [jupiter, saturn, neptune, uranus, pluto]
 total_px = sum(body.mass * body.x_vel for body in orbiting_bodies)
 total_py = sum(body.mass * body.y_vel for body in orbiting_bodies)
 sun.x_vel = -total_px / sun.mass

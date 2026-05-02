@@ -22,6 +22,7 @@ class Planet:
 
         self.orbit = []
         self.isSun = False
+        self.is_asteroid = False
         self.distance_to_sun = 0
 
         self.x_vel = 0
@@ -60,9 +61,11 @@ class Planet:
                 orbit_y = self.scaleDistance(orbit_y - center_y, zoom) + HEIGHT / 2
                 updated_points.append((orbit_x, orbit_y))
 
-            pygame.draw.lines(win, self.color, False, updated_points, 2)
+            # Don't draw orbit paths for asteroids to reduce visual clutter
+            if not self.is_asteroid: 
+                pygame.draw.lines(win, self.color, False, updated_points, 2)
 
-        if not self.isSun:
+        if not self.isSun and not self.is_asteroid:
             distance_text = FONT.render(f"{round(self.distance_to_sun/1000, 1)}km", 1, COLORS.get("WHITE"))
             win.blit(distance_text, (x - distance_text.get_width()/2, y - distance_text.get_height()/2))
             planet_name_text = FONT.render(self.name, 1, COLORS.get("WHITE"))
@@ -98,6 +101,10 @@ class Planet:
         for planet in planets:
             if self == planet:
                 continue
+            # Asteroids only interact gravitationally with the Sun and Jupiter to reduce computational load
+            if self.is_asteroid:
+                if planet.name != "Sun" and planet.name != "Jupiter":
+                    continue 
             fx, fy = self.forceOfAttractionBetweenPlanets(planet) # Get total x and y component of force from all planets
             totalFx += fx
             totalFy += fy
