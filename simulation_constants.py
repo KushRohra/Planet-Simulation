@@ -1,0 +1,43 @@
+SUN_NAME = "Sun"
+MERCURY_NAME = "Mercury"
+VENUS_NAME = "Venus"
+EARTH_NAME = "Earth"
+MARS_NAME = "Mars"
+JUPITER_NAME = "Jupiter"
+SATURN_NAME = "Saturn"
+URANUS_NAME = "Uranus"
+NEPTUNE_NAME = "Neptune"
+PLUTO_NAME = "Pluto"
+
+INNER_PLANET_NAMES = (MERCURY_NAME, VENUS_NAME, EARTH_NAME, MARS_NAME)
+OUTER_PLANET_NAMES = (JUPITER_NAME, SATURN_NAME, NEPTUNE_NAME, URANUS_NAME, PLUTO_NAME)
+
+ASTEROID_NAME_PREFIX = "Asteroid"
+ASTEROID_COUNT = 200
+ASTEROID_ORBITAL_RADIUS_RANGE_AU = (2.3, 3.5)
+ASTEROID_RADIUS_RANGE = (2, 4)
+ASTEROID_MASS_RANGE = (1.2e12, 1.4e12)
+ASTEROID_SPEED_VARIATION = (0.995, 1.005)
+ASTEROID_GRAVITY_SOURCES = {SUN_NAME, JUPITER_NAME, SATURN_NAME}
+
+SOLAR_SYSTEM_DRIFT_VX = 0
+SOLAR_SYSTEM_DRIFT_VY = 230 * 1000
+
+INITIAL_ZOOM = 10.0
+MIN_ZOOM = 0.08
+MAX_ZOOM = 40.0
+ZOOM_STEP = 0.1
+
+PLANET_IMAGE_PATHS = {
+    SUN_NAME: "./images/sun.jpeg",
+    MERCURY_NAME: "./images/mercury.jpeg",
+    VENUS_NAME: "./images/venus.jpeg",
+    EARTH_NAME: "./images/earth.jpeg",
+    MARS_NAME: "./images/mars.jpeg",
+    JUPITER_NAME: "./images/jupiter.jpeg",
+    SATURN_NAME: "./images/saturn.jpeg",
+    NEPTUNE_NAME: "./images/neptune.jpeg",
+    URANUS_NAME: "./images/uranus.jpeg",
+    PLUTO_NAME: "./images/pluto.jpeg",
+    ASTEROID_NAME_PREFIX: "./images/asteroid.jpeg",
+}

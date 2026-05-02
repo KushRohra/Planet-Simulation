@@ -1,7 +1,9 @@
 import math
+
 import pygame
 
-from display_config import WIDTH, HEIGHT, PLANET_RADIUS_SCALE, MIN_PLANET_RADIUS, MAX_PLANET_VISUAL_ZOOM, FONT, COLORS
+from display_config import COLORS, FONT, HEIGHT, MAX_PLANET_VISUAL_ZOOM, MIN_PLANET_RADIUS, PLANET_RADIUS_SCALE, WIDTH
+from simulation_constants import ASTEROID_GRAVITY_SOURCES
 
 class Planet:
     AU = 149.6e6 * 1000 # distance in meters
@@ -112,10 +114,9 @@ class Planet:
         for planet in planets:
             if self == planet:
                 continue
-            # Asteroids only interact gravitationally with the Sun and Jupiter to reduce computational load
-            if self.is_asteroid:
-                if planet.name != "Sun" and planet.name != "Jupiter" and planet.name != "Saturn":
-                    continue 
+            # Asteroids only interact gravitationally with selected major bodies to reduce computational load.
+            if self.is_asteroid and planet.name not in ASTEROID_GRAVITY_SOURCES:
+                continue
             fx, fy = self.forceOfAttractionBetweenPlanets(planet) # Get total x and y component of force from all planets
             totalFx += fx
             totalFy += fy

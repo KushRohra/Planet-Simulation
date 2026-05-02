@@ -1,13 +1,16 @@
-from constants import *
+import pygame
+
+from display_config import COLORS, WIN
+from simulation_constants import INITIAL_ZOOM, MAX_ZOOM, MIN_ZOOM, ZOOM_STEP
+from solar_system import all_bodies, sun
+
 
 def main():
     run = True
     clock = pygame.time.Clock()
-    zoom = 10.0
-    min_zoom = 0.08
-    max_zoom = 40.0
+    zoom = INITIAL_ZOOM
 
-    planets = [sun, mercury, venus, earth, mars] + asteroid_belt + [jupiter, saturn, neptune, uranus, pluto]
+    planets = all_bodies
 
     while run:
         clock.tick(60)
@@ -20,10 +23,10 @@ def main():
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4: # scroll up
-                    zoom = min(max_zoom, zoom + 0.1)
+                    zoom = min(MAX_ZOOM, zoom + ZOOM_STEP)
                 elif event.button == 5: # scroll down
-                    zoom = max(min_zoom, zoom - 0.1)
-            
+                    zoom = max(MIN_ZOOM, zoom - ZOOM_STEP)
+
         for planet in planets:
             planet.update_position(planets)
 
@@ -32,8 +35,9 @@ def main():
             if not planet.isSun:
                 planet.draw(WIN, center_x, center_y, zoom)
 
-        # Draw the sun last to ensure it remains on top of other planets
+        # Draw the sun last to ensure it remains on top of other planets.
         sun.draw(WIN, center_x, center_y, zoom)
         pygame.display.update()
-    
+
+
 main()
