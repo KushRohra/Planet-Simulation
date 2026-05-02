@@ -8,6 +8,8 @@ class Planet:
     G = 6.67428e-11
     SCALE = (min(WIDTH, HEIGHT) * 0.42) / (30.06 * AU)
     TIMESTEP = 3600 * 24 * 1 # 1 day
+    MAX_ORBIT_POINTS = 1000
+    MAX_RENDER_COORD = 2_000_000_000
     
     def __init__(self, name, x, y, radius, color, mass, image = None):
         self.x = x
@@ -49,6 +51,13 @@ class Planet:
     def draw(self, win, center_x, center_y, zoom):
         x = self.scaleDistance(self.x - center_x, zoom) + WIDTH / 2
         y = self.scaleDistance(self.y - center_y, zoom) + HEIGHT / 2
+
+        # Skip rendering if coordinates are not finite or exceed maximum renderable distance to prevent potential performance issues
+        if not math.isfinite(x) or not math.isfinite(y):
+            return
+        if abs(x) > self.MAX_RENDER_COORD or abs(y) > self.MAX_RENDER_COORD:
+            return
+
         center_pos = (int(x), int(y))
         display_radius = self.scaledRadius(zoom)
 
@@ -59,10 +68,12 @@ class Planet:
                 orbit_x, orbit_y = point
                 orbit_x = self.scaleDistance(orbit_x - center_x, zoom) + WIDTH / 2
                 orbit_y = self.scaleDistance(orbit_y - center_y, zoom) + HEIGHT / 2
-                updated_points.append((orbit_x, orbit_y))
+                if math.isfinite(orbit_x) and math.isfinite(orbit_y):
+                    if abs(orbit_x) <= self.MAX_RENDER_COORD and abs(orbit_y) <= self.MAX_RENDER_COORD:
+                        updated_points.append((orbit_x, orbit_y))
 
             # Don't draw orbit paths for asteroids to reduce visual clutter
-            if not self.is_asteroid: 
+            if not self.is_asteroid and len(updated_points) > 1:
                 pygame.draw.lines(win, self.color, False, updated_points, 2)
 
         if not self.isSun and not self.is_asteroid:
@@ -116,4 +127,10 @@ class Planet:
         # v = d/t => d = vt
         self.x += self.x_vel * self.TIMESTEP
         self.y += self.y_vel * self.TIMESTEP
+
+        if self.is_asteroid:
+            return
+
         self.orbit.append((self.x, self.y))
+        if len(self.orbit) > self.MAX_ORBIT_POINTS:
+            self.orbit.pop(0)

@@ -61,7 +61,7 @@ mars = Planet(
 mars.y_vel = 24.077 * 1000
 
 asteroid_belt = []
-for i in range(300):
+for i in range(200):
     orbital_radius = random.uniform(2.1, 3.5) * Planet.AU 
     theta = random.uniform(0, 2 * math.pi)
 
