@@ -114,7 +114,7 @@ class Planet:
                 continue
             # Asteroids only interact gravitationally with the Sun and Jupiter to reduce computational load
             if self.is_asteroid:
-                if planet.name != "Sun" and planet.name != "Jupiter":
+                if planet.name != "Sun" and planet.name != "Jupiter" and planet.name != "Saturn":
                     continue 
             fx, fy = self.forceOfAttractionBetweenPlanets(planet) # Get total x and y component of force from all planets
             totalFx += fx
