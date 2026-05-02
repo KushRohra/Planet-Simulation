@@ -122,3 +122,19 @@ pluto = Planet(
         image=load_image_for_planet("Pluto", "./images/pluto.jpeg")
     )
 pluto.y_vel = 4.74 * 1000
+
+# Balance initial linear momentum so the Sun does not drift away from the system.
+orbiting_bodies = [mercury, venus, earth, mars, asteroid, jupiter, saturn, neptune, uranus, pluto]
+total_px = sum(body.mass * body.x_vel for body in orbiting_bodies)
+total_py = sum(body.mass * body.y_vel for body in orbiting_bodies)
+sun.x_vel = -total_px / sun.mass
+sun.y_vel = -total_py / sun.mass
+
+# Add a shared drift velocity to move the full solar system together through space.
+SOLAR_SYSTEM_DRIFT_VX = 0
+SOLAR_SYSTEM_DRIFT_VY = 230 * 1000
+
+all_bodies = [sun] + orbiting_bodies
+for body in all_bodies:
+    body.x_vel += SOLAR_SYSTEM_DRIFT_VX
+    body.y_vel += SOLAR_SYSTEM_DRIFT_VY

@@ -27,7 +27,7 @@ def main():
         for planet in planets:
             planet.update_position(planets)
 
-        center_x, center_y = sun.x, sun.y
+        center_x, center_y = (sun.x, sun.y)
         for planet in planets:
             if not planet.isSun:
                 planet.draw(WIN, center_x, center_y, zoom)
