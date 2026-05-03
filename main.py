@@ -17,14 +17,12 @@ def main():
         WIN.fill(COLORS.get("BLACK"))
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 run = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4: # scroll up
+            if event.type == pygame.MOUSEWHEEL:
+                if event.y > 0: # scroll up
                     zoom = min(MAX_ZOOM, zoom + ZOOM_STEP)
-                elif event.button == 5: # scroll down
+                elif event.y < 0: # scroll down
                     zoom = max(MIN_ZOOM, zoom - ZOOM_STEP)
 
         for planet in planets:
